@@ -31,6 +31,28 @@ app.get("/", (req, res) => {
 async function run() {
   try {
     await client.connect();
+    const db = client.db("habit_tracker");
+    const habitsCollection = db.collection("habits");
+    // ------for---users--------------
+    app.get("/habits", async (req, res) => {
+      const cursor = habitsCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
+    app.get("/latest-habits", async (req, res) => {
+      const cursor = habitsCollection.find().sort({ createdAt: -1 }).limit(6);
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
+    app.post("/habits", async (req, res) => {
+      const newHabit = req.body;
+      newHabit.createdAt = new Date();
+      const result = await habitsCollection.insertOne(newHabit);
+      res.send(result);
+    });
+
     await client.db("admin").command({ ping: 1 });
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
