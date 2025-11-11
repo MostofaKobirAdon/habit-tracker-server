@@ -3,7 +3,7 @@ const cors = require("cors");
 require("dotenv").config();
 const app = express();
 const port = process.env.PORT || 3000;
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.xmhcw4e.mongodb.net/?appName=Cluster0`;
 
@@ -50,6 +50,13 @@ async function run() {
       const newHabit = req.body;
       newHabit.createdAt = new Date();
       const result = await habitsCollection.insertOne(newHabit);
+      res.send(result);
+    });
+
+    app.get("/habits/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await habitsCollection.findOne(query);
       res.send(result);
     });
 
