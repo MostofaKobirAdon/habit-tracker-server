@@ -35,7 +35,13 @@ async function run() {
     const habitsCollection = db.collection("habits");
     // ------for---users--------------
     app.get("/habits", async (req, res) => {
-      const cursor = habitsCollection.find();
+      const email = req.query.email;
+
+      const query = {};
+      if (email) {
+        query.creator_email = email;
+      }
+      const cursor = habitsCollection.find(query);
       const result = await cursor.toArray();
       res.send(result);
     });
@@ -48,7 +54,9 @@ async function run() {
 
     app.post("/habits", async (req, res) => {
       const newHabit = req.body;
+
       newHabit.createdAt = new Date();
+      newHabit.completionHistory = [];
       const result = await habitsCollection.insertOne(newHabit);
       res.send(result);
     });
