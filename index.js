@@ -30,7 +30,7 @@ app.get("/", (req, res) => {
 
 async function run() {
   try {
-    await client.connect();
+    // await client.connect();
     const db = client.db("habit_tracker");
     const habitsCollection = db.collection("habits");
     // ------for---users--------------
@@ -113,7 +113,7 @@ async function run() {
 
     // await client.db("admin").command({ ping: 1 });
     console.log(
-      "Pinged your deployment. You successfully connected to MongoDB!"
+      "Pinged your deployment. You successfully connected hello to MongoDB!"
     );
   } finally {
     // await client.close();
