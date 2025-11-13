@@ -61,6 +61,25 @@ async function run() {
       res.send(result);
     });
 
+    app.patch("/habits/:id", async (req, res) => {
+      const id = req.params.id;
+      const updatedData = req.body;
+      const query = { _id: new ObjectId(id) };
+      const update = {
+        $set: {
+          title: updatedData.title,
+          category: updatedData.category,
+          description: updatedData.description,
+          reminder_time: updatedData.reminder_time,
+          image: updatedData.image,
+        },
+      };
+
+      const result = await habitsCollection.updateOne(query, update);
+      console.log(result);
+      res.send(result);
+    });
+
     app.delete("/habits/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
