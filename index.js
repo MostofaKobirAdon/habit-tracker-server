@@ -80,6 +80,23 @@ async function run() {
       res.send(result);
     });
 
+    app.patch("/habits/:id/completionHistory", async (req, res) => {
+      const id = req.params.id;
+      const { date } = req.body;
+      const query = { _id: new ObjectId(id) };
+      const habit = await habitsCollection.findOne(query);
+      if (habit.completionHistory.includes(date)) {
+        return res.status(400).send({ message: "Already Marked as complete" });
+      }
+      const update = {
+        $push: {
+          completionHistory: date,
+        },
+      };
+      const result = await habitsCollection.updateOne(query, update);
+      res.send(result);
+    });
+
     app.delete("/habits/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
@@ -94,7 +111,7 @@ async function run() {
       res.send(result);
     });
 
-    await client.db("admin").command({ ping: 1 });
+    // await client.db("admin").command({ ping: 1 });
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
     );
